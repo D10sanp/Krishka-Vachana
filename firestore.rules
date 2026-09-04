@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default rule: Deny all reads and writes unless explicitly allowed below
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Example: Users can read/write their own profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Example: Anyone logged in can read the queue, but only admins can write
+    // Note: Since we can't use Cloud Functions for Custom Claims right now, 
+    // you might need to handle roles differently (e.g., checking a field in the user document).
+    match /queues/{queueId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null; // Restrict this later when roles are defined
+    }
+  }
+}
