@@ -13,6 +13,10 @@
 # testing
 /coverage
 
+# firebase service accounts
+*-firebase-adminsdk-*.json
+firebase-service-account.json
+
 # next.js
 /.next/
 /out/
