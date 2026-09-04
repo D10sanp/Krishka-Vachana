@@ -45,10 +45,15 @@ class Settings(BaseSettings):
     # CORS
     cors_origins: str = "http://localhost:3000"
 
-    # SMS gateway
+    # SMS gateway (Generic JSON)
     sms_gateway_api_key: str = ""
     sms_gateway_base_url: str = ""
     sms_gateway_timeout_seconds: Optional[float] = Field(default=5.0, gt=0)
+    
+    # Twilio SMS gateway (Recommended)
+    twilio_account_sid: str = ""
+    twilio_auth_token: str = ""
+    twilio_from_number: str = ""
 
     # Phone-number OTP verification (Phase 3, see app/services/otp_service.py).
     # Independent of Firebase Authentication - see app/schemas/otp.py.

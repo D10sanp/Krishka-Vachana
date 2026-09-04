@@ -33,8 +33,28 @@ def send_sms(settings: Settings, phone_number: str, message: str) -> bool:
     failures are handled (logged and swallowed, never block the primary
     operation).
     """
+    if settings.twilio_account_sid and settings.twilio_auth_token:
+        # Use Twilio API
+        try:
+            url = f"https://api.twilio.com/2010-04-01/Accounts/{settings.twilio_account_sid}/Messages.json"
+            response = httpx.post(
+                url,
+                data={
+                    "To": phone_number,
+                    "From": settings.twilio_from_number,
+                    "Body": message
+                },
+                auth=(settings.twilio_account_sid, settings.twilio_auth_token),
+                timeout=settings.sms_gateway_timeout_seconds,
+            )
+            response.raise_for_status()
+            return True
+        except Exception:
+            logger.exception("Failed to send SMS via Twilio")
+            return False
+
     if not settings.sms_gateway_base_url:
-        logger.info("SMS delivery skipped: gateway not configured")
+        logger.info(f"SMS delivery skipped: gateway not configured. Message: {message}")
         return False
 
     try:
@@ -50,5 +70,5 @@ def send_sms(settings: Settings, phone_number: str, message: str) -> bool:
         response.raise_for_status()
         return True
     except Exception:  # pragma: no cover - depends on live SMS gateway
-        logger.exception("Failed to send SMS")
+        logger.exception("Failed to send SMS via generic gateway")
         return False
