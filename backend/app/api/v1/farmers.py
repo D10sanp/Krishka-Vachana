@@ -2,17 +2,20 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, status
 
-from app.api.deps import get_current_farmer_uid, get_farmer_repository
+from app.api.deps import (
+    get_crop_repository,
+    get_current_farmer_uid,
+    get_farmer_repository,
+    get_payment_repository,
+    get_slot_booking_repository,
+)
 from app.core.config import Settings, get_settings
 from app.core.secrets import get_aadhaar_hmac_key
-from app.repositories.base import FarmerRepository
+from app.repositories.base import CropRepository, FarmerRepository, PaymentRepository, SlotBookingRepository
 from app.schemas.farmer import FarmerCreate, FarmerOut, FarmerUpdate
-from app.schemas.otp import OtpRequestOut, OtpVerifyOut, OtpVerifyRequest
-from app.services import farmer_service, otp_service
-from app.api.deps import get_crop_repository, get_payment_repository, get_slot_booking_repository
-from app.repositories.base import CropRepository, PaymentRepository, SlotBookingRepository
 from app.schemas.history import FarmHistoryOut, FarmHistoryQuery
-from app.services import history_service
+from app.schemas.otp import OtpRequestOut, OtpVerifyOut, OtpVerifyRequest
+from app.services import farmer_service, history_service, otp_service
 
 router = APIRouter(prefix="/farmers", tags=["farmers"])
 
@@ -78,7 +81,7 @@ def get_my_history(
 ) -> FarmHistoryOut:
     """
     Retrieve the authenticated farmer's aggregated history.
-    
+
     Returns:
         FarmHistoryOut: The farmer's crop, booking, and payment history.
     """
