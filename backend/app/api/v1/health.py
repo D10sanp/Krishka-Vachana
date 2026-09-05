@@ -32,7 +32,7 @@ def liveness(settings: Settings = Depends(get_settings)) -> dict:
     """Liveness check: confirm the process is running and able to respond."""
     return {
         "status": "ok",
-        "service": "kisansetu-backend",
+        "service": "krishka-vachana-backend",
         "version": settings.app_version,
         "environment": settings.environment,
         "uptime_seconds": round(time.monotonic() - _started_at, 1),

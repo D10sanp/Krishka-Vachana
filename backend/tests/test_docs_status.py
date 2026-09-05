@@ -27,7 +27,7 @@ def test_openapi_schema_available(client):
     """Verify that the OpenAPI schema is available."""
     response = client.get("/openapi.json")
     assert response.status_code == 200
-    assert response.json()["info"]["title"] == "KisanSetu API"
+    assert response.json()["info"]["title"] == "Krishka Vachana API"
 
 
 def test_status_page_served(client):

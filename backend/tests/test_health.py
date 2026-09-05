@@ -21,7 +21,7 @@ def test_liveness_check(client):
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "ok"
-    assert body["service"] == "kisansetu-backend"
+    assert body["service"] == "krishka-vachana-backend"
     assert "version" in body
     assert "uptime_seconds" in body
 
@@ -74,5 +74,5 @@ def test_root(client):
     response = client.get("/")
     assert response.status_code == 200
     body = response.json()
-    assert body["name"] == "KisanSetu API"
+    assert body["name"] == "Krishka Vachana API"
     assert body["health"] == "/api/v1/health"

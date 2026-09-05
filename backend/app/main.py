@@ -8,8 +8,8 @@ from app.core.exceptions import register_exception_handlers
 settings = get_settings()
 
 app = FastAPI(
-    title="KisanSetu API",
-    description="Backend API for KisanSetu (Krishka Vachana) - SIH26032",
+    title="Krishka Vachana API",
+    description="Backend API for Krishka Vachana - SIH26032",
     version=settings.app_version,
     # Default /docs is disabled here; a re-skinned version is served by
     # app.api.docs below. Both /docs and /redoc can be fully switched off in
@@ -41,7 +41,7 @@ if settings.enable_docs:
 def root() -> dict:
     """Return basic API information and links to documentation and health endpoints."""
     return {
-        "name": "KisanSetu API",
+        "name": "Krishka Vachana API",
         "version": settings.app_version,
         "docs": "/docs" if settings.enable_docs else None,
         "status": "/status" if settings.enable_docs else None,

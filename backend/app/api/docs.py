@@ -31,7 +31,7 @@ def custom_swagger_docs() -> HTMLResponse:
     """Serve custom-branded Swagger UI documentation."""
     response = get_swagger_ui_html(
         openapi_url="/openapi.json",
-        title="KisanSetu API - Docs",
+        title="Krishka Vachana API - Docs",
     )
     html = response.body.decode("utf-8").replace("</head>", f"{_SWAGGER_BRAND_CSS}</head>")
     return HTMLResponse(html)
@@ -75,4 +75,4 @@ def status_page(
         <p><a class="link" href="{api_prefix}/health/ready">Readiness check (JSON)</a></p>
       </div>
     """
-    return HTMLResponse(page_shell("KisanSetu API - Status", body))
+    return HTMLResponse(page_shell("Krishka Vachana API - Status", body))

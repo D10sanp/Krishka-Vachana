@@ -3,7 +3,7 @@
 Not part of the frontend app (that's the Frontend role's Next.js app under
 frontend/). This is just enough branding on FastAPI's built-in docs and a
 plain status page so anyone opening the API's own URLs during dev/demo
-sees something that looks like KisanSetu instead of a bare default page.
+sees something that looks like Krishka Vachana instead of a bare default page.
 Colors are taken from the repo's UI_rules.md "Color System" section so the
 two stay visually consistent, not because this backend page is meant to be
 a real product surface.
@@ -100,7 +100,7 @@ def page_shell(title: str, body_html: str) -> str:
 <body>
   <div class="topbar">
     <span class="dot"></span>
-    <h1>KisanSetu API</h1>
+    <h1>Krishka Vachana API</h1>
   </div>
   <div class="container">
     {body_html}

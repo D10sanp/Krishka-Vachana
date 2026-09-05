@@ -43,7 +43,6 @@ def dispatch_notification(notification: Callable[[], None], description: str) ->
 
 def _to_out(repo: QueueRepository, record: dict) -> QueueEntryOut:
     """Convert a queue entry record to output schema with computed position and wait fields."""
-    """Attach the derived token number and live position/wait fields before returning."""
     out = dict(record)
     out["token_number"] = f"{record['sequence_number']:03d}"
     if record.get("status") == "waiting":
@@ -67,7 +66,6 @@ def _queue_date_at(instant: datetime) -> str:
 
 def _notify_check_in(farmer_repo: FarmerRepository, record: dict) -> None:
     """Send best-effort SMS notification with token number to the checked-in farmer."""
-    """Best-effort SMS with the farmer's token number; never blocks check-in."""
     try:
         farmer = farmer_repo.get(record["farmer_id"])
         phone_number = farmer.get("phone_number") if farmer else None
@@ -76,7 +74,7 @@ def _notify_check_in(farmer_repo: FarmerRepository, record: dict) -> None:
         send_sms(
             get_settings(),
             phone_number,
-            f"KisanSetu: you're checked in, token #{record['sequence_number']:03d}. "
+            f"Krishka Vachana: you're checked in, token #{record['sequence_number']:03d}. "
             "We'll see you soon at the centre.",
         )
     except Exception:  # pragma: no cover - notification is best-effort only
@@ -85,7 +83,6 @@ def _notify_check_in(farmer_repo: FarmerRepository, record: dict) -> None:
 
 def _dispatch_check_in_notification(farmer_repo: FarmerRepository, record: dict) -> None:
     """Dispatch check-in SMS notification to background worker pool without blocking."""
-    """Submit best-effort SMS delivery to the bounded process worker pool."""
     dispatch_notification(
         lambda: _notify_check_in(farmer_repo, record),
         "Check-in SMS",
@@ -154,7 +151,6 @@ def get_queue_entry(queue_repo: QueueRepository, farmer_id: str, queue_id: str) 
 
 
 def _resolve(queue_repo: QueueRepository, farmer_id: str, queue_id: str, new_status: str) -> QueueEntryOut:
-    """Mark a queue entry as resolved with the specified terminal status (served or left)."""
     """Mark a queue entry as resolved with the given terminal status."""
     record = queue_repo.resolve(queue_id, farmer_id, new_status, utcnow())
     if record is None:

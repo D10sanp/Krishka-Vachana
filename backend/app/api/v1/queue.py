@@ -114,7 +114,7 @@ def printable_token(
 
     body = f"""
       <div class="card" style="text-align:center;">
-        <span class="badge badge-ok">KisanSetu Token</span>
+        <span class="badge badge-ok">Krishka Vachana Token</span>
         <div style="font-size:56px;font-weight:700;color:#123524;margin:16px 0;">#{entry.token_number}</div>
         <p style="font-size:18px;margin:4px 0;">{farmer_name}</p>
         <p style="color:#68756D;margin:2px 0;">{centre_name}</p>

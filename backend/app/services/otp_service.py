@@ -80,7 +80,7 @@ def request_otp(settings: Settings, farmer_repo: FarmerRepository, farmer_id: st
         raise ConflictError("Please wait before requesting another verification code")
 
     message = (
-        f"KisanSetu: your verification code is {code}. "
+        f"Krishka Vachana: your verification code is {code}. "
         f"It expires in {_format_expiration(settings.otp_ttl_seconds)}."
     )
     dispatch_notification(

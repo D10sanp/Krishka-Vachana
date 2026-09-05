@@ -42,7 +42,7 @@ def _notify_booking_confirmed(farmer_repo: FarmerRepository, record: dict) -> No
         send_sms(
             get_settings(),
             phone_number,
-            f"KisanSetu: your slot at {record['centre_id']} on {record['slot_date']} "
+            f"Krishka Vachana: your slot at {record['centre_id']} on {record['slot_date']} "
             f"({record['slot_window']}) is confirmed.",
         )
     except Exception:  # pragma: no cover - notification is best-effort only
