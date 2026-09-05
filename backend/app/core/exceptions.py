@@ -4,9 +4,13 @@ Keeping this in one place means every endpoint returns errors in the same
 shape, which is what the frontend team needs for consistent error-state UI
 (see UI_rules.md section 22, "Error States").
 """
+import logging
+
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+
+logger = logging.getLogger("app.exceptions")
 
 
 class AppError(Exception):
@@ -90,4 +94,22 @@ def register_exception_handlers(app: FastAPI) -> None:
                     "message": "Request validation failed",
                 }
             },
+        )
+
+    @app.exception_handler(Exception)
+    async def handle_unexpected_error(_request: Request, exc: Exception) -> JSONResponse:
+        """Safety net for any exception not raised as an AppError.
+
+        Every call site that can reach an external dependency (Firestore,
+        Secret Manager, the SMS/congestion/payment-gateway HTTP clients)
+        already has its own try/except that translates failures into an
+        AppError subclass. This handler exists so a *future* call site that
+        forgets to do that still returns the same JSON error shape instead
+        of a bare, unshaped 500 - the internals are logged server-side only,
+        never included in the response.
+        """
+        logger.exception("Unhandled exception")
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": {"code": "internal_error", "message": "An unexpected error occurred"}},
         )
