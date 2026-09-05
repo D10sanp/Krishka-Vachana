@@ -1,0 +1,20 @@
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+# Full rule adoption (including pyupgrade UP* rules) is deliberately deferred -
+# see backend/CONTRIBUTING.md "Formatting & linting" for why, and what to run
+# when the team is ready to adopt it.
+select = ["E", "F", "I", "B"]
+ignore = [
+    # B008: function-call-in-default-argument. This is exactly how FastAPI's
+    # Depends(...) pattern works and is required, not a bug - every route
+    # and dependency in this codebase uses it correctly. Re-evaluate only if
+    # ruff ships FastAPI-aware handling for this rule.
+    "B008",
+]
+
+[tool.black]
+line-length = 110
+target-version = ["py312"]
