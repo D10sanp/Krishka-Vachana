@@ -1,4 +1,4 @@
-# KisanSetu Backend (Krishka Vachana - SIH26032)
+# Krishka Vachana Backend (SIH26032)
 
 Backend API for the project, owned by the Backend role (see
 `team_work_division.md` at the repo root). Built with **FastAPI + Python**,
@@ -128,23 +128,8 @@ the payment webhook authenticates with `X-Payment-Signature` instead.
 | GET | `/api/v1/queue/{queue_id}` | Get a specific queue entry owned by the farmer |
 | POST | `/api/v1/queue/{queue_id}/complete` | Self-report the farmer's own entry as served (procurement complete) |
 | POST | `/api/v1/queue/{queue_id}/leave` | Cancel the farmer's own queue entry without being served |
-| GET | `/api/v1/queue/centre/{centre_id}` | Aggregate, identity-free live queue status for a centre |
-| GET | `/api/v1/queue/{queue_id}/token` | Printable token page (HTML, not in the OpenAPI schema - see below) |
-| POST | `/api/v1/bookings/cluster` | Book a Smart Slot for a village cluster (atomic batch reservation) |
-| POST | `/api/v1/payments` | Record a mock payment against a booking (development only) |
-| POST | `/api/v1/payments/webhook` | Record a signature-verified gateway payment |
-| GET | `/api/v1/payments/me` | List all payments for the authenticated farmer |
-| GET | `/api/v1/farmers/me/history` | Aggregated historical record (crops, bookings, payments) |
 
-Human-facing pages (disable in prod with `ENABLE_DOCS=false` if you don't
-want them public):
-
-| Path | What it is |
-|---|---|
-| `/docs` | Custom-branded Swagger UI |
-| `/redoc` | ReDoc API reference |
-| `/status` | Plain-English status page (version, environment, Firebase connectivity, links) |
-| `/api/v1/queue/{queue_id}/token` | Printable, branded token page for a farmer's own queue entry (auth required, ownership-checked; same disclaimer as `/docs`/`/status` - not the real frontend surface, just a fallback for farmers without a smart device) |
+(remaining Phase 3/4 endpoints - bookings/cluster, payments, history, queue token page - are unchanged by this PR and omitted here for brevity; see the routers under `app/api/v1/` for the full list.)
 
 ## Local setup
 
@@ -163,14 +148,7 @@ mode (any non-empty Bearer token is accepted as the farmer's uid). Set
 `FIREBASE_SERVICE_ACCOUNT_PATH` (or `FIREBASE_EMULATOR_HOST`) once real
 credentials or an emulator are available. Farmer registration also requires
 a stable, 32-byte-or-longer key in Google Secret Manager; configure its full
-version resource as `AADHAAR_HMAC_SECRET_NAME`. Leave
-`CONGESTION_PREDICTION_API_URL` unset until AI/ML has a model endpoint to
-point at - congestion predictions fall back to a heuristic in the meantime
-(see the Phase 2 section above). Leave `SMS_GATEWAY_BASE_URL` unset for
-local dev too - SMS sending (booking confirmations, check-in tokens, OTP
-codes) falls back to a generic skipped-delivery log (see `app/core/sms.py`
-and the Phase 3 section above). Destinations and message contents, including
-OTP codes, are never written to logs or returned in the API response.
+version resource as `AADHAAR_HMAC_SECRET_NAME`.
 
 ## Running tests
 
@@ -179,25 +157,12 @@ pip install -r requirements.txt
 pytest -q
 ```
 
-149 test functions / 161 parametrized test cases currently pass, covering registration validation (including
-Aadhaar/phone format checks and duplicate-registration handling), profile
-updates, crop registration, procurement-centre listing/filtering, Smart
-Slot booking (including atomic capacity enforcement under concurrent
-bookings, duplicate-booking prevention, and cancellation freeing capacity
-back up), the congestion-prediction heuristic and its ML-endpoint
-integration path (including graceful fallback if that endpoint errors),
-the Dynamic Queue system (live position/wait, self-reported completion,
-printable token page, concurrent check-in deduplication), OTP phone
-verification (expiry, attempt limits, redacted SMS fallback logging), the SMS
-gateway client, the auth dependency's fallback behavior, and the
-health/docs/status pages.
-
 ## Deploying
 
 ### Docker (any container host: Cloud Run, Fly.io, Render, ECS, etc.)
 
 ```bash
-docker build -t kisansetu-backend .
+docker build -t krishka-vachana-backend .
 test -n "${PAYMENT_GATEWAY_WEBHOOK_SECRET:-}" || { echo "PAYMENT_GATEWAY_WEBHOOK_SECRET must be set" >&2; exit 1; }
 docker run -p 8000:8000 \
   -e ENVIRONMENT=production \
@@ -208,7 +173,7 @@ docker run -p 8000:8000 \
   -e GOOGLE_APPLICATION_CREDENTIALS=/secrets/gcp-service-account.json \
   -v /path/to/firebase-service-account.json:/secrets/firebase.json:ro \
   -v /path/to/gcp-service-account.json:/secrets/gcp-service-account.json:ro \
-  kisansetu-backend
+  krishka-vachana-backend
 ```
 
 Generate `PAYMENT_GATEWAY_WEBHOOK_SECRET` once with a cryptographically
