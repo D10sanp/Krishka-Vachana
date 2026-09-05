@@ -10,7 +10,7 @@ Backend expects that data to have. The in-memory fallback
 (app/repositories/memory.py) seeds a handful of sample centres so this is
 usable in dev/tests before that collection exists.
 """
-from datetime import datetime, timezone
+from datetime import datetime
 
 from pydantic import BaseModel, Field
 
@@ -40,8 +40,3 @@ class CentreOut(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
-
-
-def utcnow() -> datetime:
-    """Return the current UTC datetime."""
-    return datetime.now(timezone.utc)

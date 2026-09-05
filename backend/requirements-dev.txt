@@ -1,0 +1,6 @@
+# Test/dev-only dependencies. Not installed in the production Docker image
+# (see Dockerfile) - only requirements.txt ships there.
+-r requirements.txt
+
+pytest==9.0.3
+pytest-asyncio==1.4.0

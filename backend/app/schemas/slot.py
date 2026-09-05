@@ -8,11 +8,12 @@ create_if_capacity_available, which uses the same atomic
 reserve-then-create pattern app/services/farmer_service.py already uses
 for Aadhaar uniqueness.
 """
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
 
+from app.core.time import utcnow
 from app.schemas.centre import SLOT_WINDOWS
 
 
@@ -54,8 +55,3 @@ class SlotBookingOut(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
-
-
-def utcnow() -> datetime:
-    """Return the current UTC datetime."""
-    return datetime.now(timezone.utc)

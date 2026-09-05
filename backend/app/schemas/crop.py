@@ -5,10 +5,12 @@ the sample flow (Farmer -> Smart Slot -> ...). Procurement-centre selection
 and slot booking are a separate, later phase (see roadmap in the PR
 description) and are intentionally not in this module yet.
 """
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator, model_validator
+
+from app.core.time import utcnow
 
 # Common procurement crops. Kept open-ended via "other" so this isn't a hard
 # blocker if a state's mandi handles something not listed here yet.
@@ -71,8 +73,3 @@ class CropOut(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
-
-
-def utcnow() -> datetime:
-    """Return the current UTC datetime."""
-    return datetime.now(timezone.utc)

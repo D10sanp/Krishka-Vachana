@@ -11,11 +11,12 @@ import hashlib
 import hmac
 import logging
 import secrets
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 
 from app.core.config import Settings
 from app.core.exceptions import ConflictError, NotFoundError, ValidationAppError
 from app.core.sms import send_sms
+from app.core.time import utcnow
 from app.repositories.base import FarmerRepository, OtpVerificationResult
 from app.schemas.otp import OtpRequestOut, OtpVerifyOut
 from app.services.queue_service import dispatch_notification
@@ -30,11 +31,6 @@ def _hash_code(code: str, secret: str) -> str:
         code.encode("utf-8"),
         hashlib.sha256,
     ).hexdigest()
-
-
-def utcnow() -> datetime:
-    """Return the current UTC datetime."""
-    return datetime.now(timezone.utc)
 
 
 def _format_expiration(ttl_seconds: int) -> str:

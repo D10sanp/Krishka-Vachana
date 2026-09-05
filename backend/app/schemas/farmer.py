@@ -12,10 +12,12 @@ validated on input, converted to a keyed fingerprint, and discarded - see
 app/services/farmer_service.py.
 """
 import re
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
+
+from app.core.time import utcnow
 
 # Keep this list in sync with what the AI/ML and Frontend teams support for
 # the "regional language capability" requirement. Extend as needed.
@@ -39,7 +41,6 @@ class FarmerCreate(BaseModel):
     @field_validator("full_name", "village", "district", "state")
     @classmethod
     def strip_and_require_length(cls, v: str, info) -> str:
-        """Strip whitespace and validate minimum length after stripping."""
         """Strip whitespace and validate minimum length requirements."""
         v = v.strip()
         minimum = 2 if info.field_name == "full_name" else 1
@@ -53,7 +54,6 @@ class FarmerCreate(BaseModel):
     @field_validator("phone_number")
     @classmethod
     def validate_phone(cls, v: str) -> str:
-        """Validate phone number format matches Indian mobile number pattern."""
         """Validate that phone number is a 10-digit Indian mobile number."""
         if not _PHONE_RE.match(v):
             raise ValueError("phone_number must be a 10-digit Indian mobile number")
@@ -62,7 +62,6 @@ class FarmerCreate(BaseModel):
     @field_validator("aadhaar_number")
     @classmethod
     def validate_aadhaar(cls, v: str) -> str:
-        """Validate Aadhaar number is exactly 12 digits."""
         """Validate that Aadhaar number is exactly 12 digits."""
         if not _AADHAAR_RE.match(v):
             raise ValueError("aadhaar_number must be exactly 12 digits")
@@ -71,7 +70,6 @@ class FarmerCreate(BaseModel):
     @field_validator("preferred_language")
     @classmethod
     def validate_language(cls, v: str) -> str:
-        """Validate preferred language is in supported languages list."""
         """Validate that preferred language is in the supported languages list."""
         if v not in SUPPORTED_LANGUAGES:
             raise ValueError(f"preferred_language must be one of {sorted(SUPPORTED_LANGUAGES)}")
@@ -90,7 +88,6 @@ class FarmerUpdate(BaseModel):
     @field_validator("full_name", "village", "district", "state")
     @classmethod
     def strip_and_require_length(cls, v: Optional[str], info) -> Optional[str]:
-        """Strip whitespace and validate minimum length for optional update fields."""
         """Strip whitespace and validate minimum length requirements for optional fields."""
         if v is None:
             return v
@@ -106,7 +103,6 @@ class FarmerUpdate(BaseModel):
     @field_validator("preferred_language")
     @classmethod
     def validate_language(cls, v: Optional[str]) -> Optional[str]:
-        """Validate preferred language is in supported languages list (when provided)."""
         """Validate that preferred language is in the supported languages list (if provided)."""
         if v is not None and v not in SUPPORTED_LANGUAGES:
             raise ValueError(f"preferred_language must be one of {sorted(SUPPORTED_LANGUAGES)}")
@@ -128,8 +124,3 @@ class FarmerOut(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
-
-
-def utcnow() -> datetime:
-    """Return the current UTC datetime."""
-    return datetime.now(timezone.utc)

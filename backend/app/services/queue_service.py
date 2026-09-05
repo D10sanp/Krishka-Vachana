@@ -151,7 +151,7 @@ def get_queue_entry(queue_repo: QueueRepository, farmer_id: str, queue_id: str) 
 
 
 def _resolve(queue_repo: QueueRepository, farmer_id: str, queue_id: str, new_status: str) -> QueueEntryOut:
-    """Mark a queue entry as resolved with the given terminal status."""
+    """Mark a queue entry as resolved with the given terminal status (served or left)."""
     record = queue_repo.resolve(queue_id, farmer_id, new_status, utcnow())
     if record is None:
         raise NotFoundError("Active queue entry not found")
