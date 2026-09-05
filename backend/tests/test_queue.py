@@ -401,7 +401,7 @@ def test_printable_token_returns_html(client, auth_headers, seeded_centre_id):
     assert r.status_code == 200
     assert "text/html" in r.headers["content-type"]
     assert "#001" in r.text
-    assert "KisanSetu" in r.text
+    assert "Krishka Vachana" in r.text
     assert "Print this page" in r.text
     assert "Position 1 in the queue" in r.text
     assert "Ravi &lt;strong&gt;Kumar&lt;/strong&gt;" in r.text
